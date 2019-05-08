@@ -1,36 +1,27 @@
+/*Given an array A of integers, find the index of values that satisfy A + B = C + D, where
+A,B,C & D are integers values in the array*/
+
+#define ll long long int
+
 vector<int> Solution::equal(vector<int> &A) {
-    unordered_map<int, pair<int, int>> mp;
-    vector<int> ans;
+    map<ll, pair<int, int>> mp;
+    vector<int> res;
     for(int i = 0; i < A.size(); i++) {
         for(int j = i + 1; j < A.size(); j++) {
-            int sum = A[i] + A[j];
-            if(mp.find(sum) == mp.end())
-                mp[A[i] + A[j]] = { i, j };
-            else {
-                pair<int, int> p = mp[sum];
-                if(p.first < i && p.second != i && p.second != j) {
-                    vector<int> temp;
-                    temp.push_back(p.first);
-                    temp.push_back(p.second);
-                    temp.push_back(i);
-                    temp.push_back(j);
-                    
-                    if(ans.size() == 0)
-                        ans = temp;
-                    else {
-                        for(int k = 0; k < ans.size(); k++) {
-                            if(ans[i] < temp[i])
-                                break;
-                            if(ans[i] > temp[i]) {
-                                temp = ans;
-                                break;
-                            }    
-                        }
-                    }    
+            if(mp.find(A[i] + A[j]) != mp.end()) {
+                if(mp[A[i] + A[j]].first != i && mp[A[i] + A[j]].second != i && 
+                mp[A[i] + A[j]].first != j && mp[A[i] + A[j]].second != j) {
+                    vector<int> v = 
+                    { mp[A[i] + A[j]].first, mp[A[i] + A[j]].second, i, j };
+                    if(!res.size() || v < res)
+                        res = v;
                 }
-            }    
+            }
+            else {
+                mp[A[i] + A[j]] = { i, j };
+            }
         }
     }
-    return ans;
+    return res;
 }
 
