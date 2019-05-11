@@ -1,30 +1,29 @@
-string Solution::minWindow(string s, string pat) {
-    map<char, int> mpS, mpPat;
-    int l = 0, minLen = INT_MAX, start = 0, startIdx = -1;
-    for(int i=0; i<pat.size(); i++) {
-        mpPat[pat[i]]++;
+string Solution::minWindow(string B, string A) {
+    unordered_map<char, int> mpA, mpB;
+    int currStart = 0, start = -1, cnt = 0, minLen = INT_MAX;
+    for(int i = 0; i < A.size(); i++) {
+        mpA[A[i]]++;
     }
-    int cnt = 0;
-    for(int i = 0; i < s.length(); i++) {
-        mpS[s[i]]++;
-        if(mpPat[s[i]] != 0 && mpS[s[i]] <= mpPat[s[i]])
+    for(int i = 0; i < B.size(); i++) {
+        mpB[B[i]]++;
+        if(mpB[B[i]] <= mpA[B[i]]) {
             cnt++;
-        if(cnt == pat.length()) {
-            while(mpS[s[start]] > mpPat[s[start]] > 0 
-            || mpPat[s[start]] == 0) {
-                if(mpS[s[start]] > mpPat[s[start]])
-                    mpS[s[start]]--;
-                start++;    
+        }
+        if(cnt == A.size()) {
+            while(mpB[B[currStart]] > mpA[B[currStart]]) {
+                if(mpA[B[currStart]])
+                    mpB[B[currStart]]--;
+                currStart++;
             }
-            int len = i - start + 1;
+            int len = i - currStart + 1;
             if(len < minLen) {
                 minLen = len;
-                startIdx = start;
+                start = currStart;
             }
-        }    
+        }
     }
-    if(startIdx == -1)
+    if(start == -1)
         return "";
-    return s.substr(startIdx, minLen);
+    return B.substr(start, minLen);    
 }
 
