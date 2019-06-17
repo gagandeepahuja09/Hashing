@@ -102,7 +102,7 @@ void LRUCache::set(int key, int value) {
     if(mp.find(key) != mp.end()) {
         Node* curr = mp[key];
         curr -> val = value;
-        dq.recentlyUsed(curr);
+        dq.recentlyUsed(curr); 
     }
     else {
         if(n >= lruSize) {
