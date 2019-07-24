@@ -1,29 +1,27 @@
 string Solution::fractionToDecimal(int A, int B) {
     if(!A)
         return "0";
-    long n = A, d = B;
-    string res = "";
-    if(n < 0 ^ d < 0)
-        res += '-';
-    n = abs(n);
-    d = abs(d);
-    res += to_string(n / d);
-    long rem = n % d;
-    if(!rem)
-        return res;
-    res += '.';
+    string ret = "";
+    if(A > 0 ^ B > 0)
+        ret += '-';
+    long num  = labs(A), den = labs(B);
+    long val = num % den;
+    ret += to_string(num / den);
+    if(!val) {
+        return ret;
+    }
+    ret += '.';
     unordered_map<int, int> mp;
-    while(rem) {
-        if(mp.find(rem) != mp.end()) {
-            res.insert(mp[rem], 1, '(');
-            res.push_back(')');
+    while(val) {
+        if(mp[val]) {
+            ret.insert(mp[val], "(");
+            ret += ')';
             break;
         }
-        mp[rem] = res.size();
-        rem *= 10;
-        res += (rem / d + '0');
-        rem %= d;
+        mp[val] = ret.size();
+        val *= 10;
+        ret += to_string(val / den);
+        val %= den;
     }
-    return res;
+    return ret;
 }
-
