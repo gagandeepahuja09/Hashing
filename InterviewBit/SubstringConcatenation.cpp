@@ -1,21 +1,20 @@
 vector<int> Solution::findSubstring(string A, const vector<string> &B) {
-    map<string, int> mpB;
-    int sz = 0;
+    int l = B[0].size();
+    unordered_map<string, int> mp;
     for(int i = 0; i < B.size(); i++) {
-        mpB[B[i]]++;
-        sz++;
+        mp[B[i]]++;
     }
-    vector<int> res;
+    vector<int> ret;
+    int len = B.size() * B[0].size();
     for(int i = 0; i < A.size(); i++) {
-        map<string, int> mpA;
-        int cnt = 0;
-        for(int j = i; j + B[0].size() <= A.size() && cnt < sz; j += B[0].size()) {
-            mpA[A.substr(j, B[0].size())]++;
-            cnt++;
+        int j = i;
+        unordered_map<string, int> mp2;
+        while(j < i + len && j < A.size()) {
+            mp2[A.substr(j, l)]++;
+            j += l;
         }
-        if(mpA == mpB)
-            res.push_back(i);
+        if(mp2 == mp)
+            ret.push_back(i);
     }
-    return res;
+    return ret;
 }
-
