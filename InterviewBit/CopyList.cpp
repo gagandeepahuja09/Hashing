@@ -6,33 +6,29 @@
  *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
  * };
  */
-RandomListNode* Solution::copyRandomList(RandomListNode* A) {
-    RandomListNode* curr = A;
-    while(curr) {
-        RandomListNode* temp = curr -> next;
-        RandomListNode* newNode = new RandomListNode(curr -> label);
-        curr -> next = newNode;
-        newNode -> next = temp;
-        curr = temp;
+RandomListNode* Solution::copyRandomList(RandomListNode* head) {
+    RandomListNode* curr = head;
+    while(head) {
+        RandomListNode* temp = head -> next;
+        head -> next = new RandomListNode(head -> label);
+        head -> next -> next = temp;
+        head = head -> next -> next;
     }
-    curr = A;
-    while(curr) {
-        if(curr -> next) {
-            if(curr -> random) {
-                curr -> next -> random = curr -> random -> next;
-            }
-        }
-        curr = curr -> next ? curr -> next -> next : curr -> next;
+    head = curr;
+    while(head && head -> next) {
+        if(head -> random)
+            head -> next -> random = head -> random -> next;
+        head = head -> next -> next;
     }
-    RandomListNode* original = A, *copy = A -> next;
-    curr = copy;
-    while(original && copy) {
-        if(original -> next)
-            original -> next = original -> next -> next;
-        if(copy -> next)
-            copy -> next = copy -> next -> next;
-        original = original -> next;
-        copy = copy -> next;
+    head = curr -> next;
+    RandomListNode* newHead = head;
+    while(head) {
+        if(head->next)
+        head -> next = head -> next -> next;
+        else
+            return newHead;
+        head = head -> next;
     }
-    return curr;
+    return newHead;
 }
+
