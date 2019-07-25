@@ -1,114 +1,99 @@
-/// Source: https://github.com/gagandeepahuja09/SportProgramming/blob/master/InterviewBit/Heaps-And-Maps/LRU.cpp
+int n;
 
 class Node {
     public:
-        Node(int a, int b): left(0), right(0), val(a), k(b) {}
-        Node *left, *right;
-        int val;
-        int k;
-};
-
-class Dq {
-    public:
-        Dq(): front(0), rear(0) {}
-        Node *front, *rear;
-        Node* pushFront(int, int);
-        int popBack();
-        void clear();
-        void recentlyUsed(Node*);
-};
-
-Node* Dq::pushFront(int a, int b) {
-    Node* node = new Node(a, b);
-    if(!front) {
-        front = node;
-        rear = node;
+    Node *next, *prev;
+    int key, val;
+    Node(int k, int v) {
+        key = k; 
+        val = v;
+        next = NULL;
+        prev = NULL;
     }
-    else {
-        front -> left = node;
-        node -> right = front;
-        front = node;
-    }
-    return node;
+};
+Node *head, *tail; 
+unordered_map<int, Node*> mp;
+
+void moveToFront(Node* &curr) {
+    Node* prev = curr -> prev;
+    if(!prev)
+        return;
+    Node* next = curr -> next;
+    prev -> next = next;
+    if(next)
+        next -> prev = prev;
+    curr -> next = head;
+    head -> prev = curr;
+    head = curr;
 }
 
-int Dq::popBack() {
-    Node* curr = rear;
-    int key = curr -> k;
-    rear = rear -> left;
-    if(rear)
-        rear -> right = NULL;
-    else
-        front = NULL;
-    delete curr;
+LRUCache::LRUCache(int capacity) {
+    mp.clear();
+    head = tail = NULL;
+    n = capacity;
+}
+
+void insertAtFront(int key, int value) {
+    if(!head) {
+        head = new Node(key, value);
+        tail = head;
+    }
+    else {
+        Node* temp = new Node(key, value);
+        temp -> next = head;
+        head -> prev = temp;
+        head = temp;
+    }
+    mp[key] = head;
+}
+
+int removeLRU() {
+    Node* prev = tail -> prev;
+    int x=tail->key;
+    if(!prev)
+    {
+        head = tail = NULL;
+        delete (tail);
+        return x;
+    }
+    Node* temp = tail;
+    tail = prev;
+    tail -> next = NULL;
+    int key = temp -> key;
+    delete(temp);
     return key;
 }
 
-void Dq::clear() {
-    Node* curr = front;
-    while(front) {
-        front = front -> right;
-        delete curr;
-        curr = front;
-    }
-    front = rear = NULL;
-}
-
-void Dq::recentlyUsed(Node* curr) {
-    // Remove it from its current position
-    if(!curr)
-        return;
-    Node* prev = curr -> left;
-    if(prev)
-        prev -> right = curr -> right;
-    else
-        return;
-    Node* next = curr -> right;
-    next -> left = prev;
-    // Spl case if rear and curr are same
-    if(rear == curr) {
-        rear = curr -> left;
-    }
-    rear -> right = NULL;
-    // Move it at the front
-    curr -> right = front;
-    front -> left = curr;
-    curr -> left = NULL;
-    front = curr;
-}
-
-unordered_map<int, Node*> mp;
-int lruSize = 0;
-Dq dq;
-
-LRUCache::LRUCache(int capacity) {
-    dq.clear();
-    mp.clear();
-    lruSize = capacity;
-}
-
 int LRUCache::get(int key) {
+    // key does not exist
     if(mp.find(key) == mp.end())
         return -1;
+    // key exists move at front and return val
+    int val = mp[key] -> val;
     Node* curr = mp[key];
-    dq.recentlyUsed(curr);
-    return dq.front -> val;
+    moveToFront(curr);
+    return val;
 }
 
 void LRUCache::set(int key, int value) {
-    int n = mp.size();
-    // Key with this already exists in LRU
-    // So it is most recently used => It should be moved to the front
     if(mp.find(key) != mp.end()) {
+        // key exists
+        // move at front and update val
         Node* curr = mp[key];
+        moveToFront(curr);
         curr -> val = value;
-        dq.recentlyUsed(curr); 
     }
     else {
-        if(n >= lruSize) {
-            mp.erase(dq.popBack());
+        // key does not exist
+        // check size
+        // if map size is greater than or equal to capacity
+        // remove lru from back and insert element at front
+        if(mp.size() >= n) {
+            int k = removeLRU();
+            mp.erase(k);
         }
-        mp[key] = dq.pushFront(value, key);
+        // insert at front of dll
+        insertAtFront(key, value);
     }
 }
 
