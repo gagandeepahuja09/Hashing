@@ -1,25 +1,19 @@
-vector<int> Solution::dNums(vector<int> &A, int k) {
-    map<int, int> mp;
-    vector<int> res;
+vector<int> Solution::dNums(vector<int> &A, int B) {
+    unordered_map<int, int> mp;
+    vector<int> ret;
     int cnt = 0;
-    for(int i=0; i<k; i++) {
-        if(!mp[A[i]])
-            cnt++;
-        mp[A[i]]++;
+    for(int i = 0; i < B && i < A.size(); i++) {
+        if(!mp[A[i]]++)
+            cnt++;    
     }
-    res.push_back(cnt);
-    for(int i=k; i<A.size(); i++) {
-        // It it was a distinct element then remove count
-        if(mp[A[i- k]] == 1) {
-            cnt--;
-        }
-        mp[A[i-k]]--;
-        // If it is not already in window
-        if(mp[A[i]] == 0)
+    ret.push_back(cnt);
+    for(int i = B; i < A.size(); i++) {
+        if(!mp[A[i]]++)
             cnt++;
-        mp[A[i]]++;    
-        res.push_back(cnt);
+        if(mp[A[i - B]]-- == 1)
+            cnt--;    
+        ret.push_back(cnt);    
     }
-    return res;
+    return ret;
 }
 
