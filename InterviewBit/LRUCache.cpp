@@ -18,11 +18,15 @@ void moveToFront(Node* &curr) {
     Node* prev = curr -> prev;
     if(!prev)
         return;
+    if(curr == tail) {
+        tail = prev;
+    }
     Node* next = curr -> next;
     prev -> next = next;
     if(next)
         next -> prev = prev;
     curr -> next = head;
+    curr -> prev = NULL;
     head -> prev = curr;
     head = curr;
 }
