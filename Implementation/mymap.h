@@ -43,4 +43,42 @@ class mymap {
 		}
 		delete [] buckets;
 	}
+
+	int size() {
+		return count;
+	}
+	
+	V getValue(string key) {
+		
+	}
+
+	private:
+	int getBucketIndex(string key) {
+		int hashCode = 0, currCoeff = 1;
+		for(int i = key.size() - 1; i >= 0; i--) {
+			hashCode += key[i] * currCoeff;
+			hashCode %= numBuckets;
+			currCoeff *= 37;
+			currCoeff %= numBuckets;
+		}
+		return hashCode % numBuckets;	
+	}
+
+	public:
+	void insert(string key, V value) {
+		int bucketIndex = getBucketIndex(key);
+		MapNode<V>* head = buckets[bucketIndex];
+		while(head) {
+			if(head -> key == key) {
+				head -> value = value;
+				return;
+			}
+			head = head -> next;
+		}
+		head = buckets[bucketIndex];
+		MapNode<V>* node = new MapNode<V>(key, value);
+		node -> next = head;
+		buckets[bucketIndex] = node;
+		count++;	
+	}
 };
