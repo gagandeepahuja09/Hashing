@@ -1,21 +1,22 @@
 class Solution {
 public:
     long counter(int N) {
-        long res = 0;
+        long ans = 0;
         while(N) {
-            res += pow(10, N % 10);
+            ans += pow(10, N % 10);    
             N /= 10;
         }
-        return res;
+        return ans;
     }
     
     bool reorderedPowerOf2(int N) {
-        long cmp = counter(N);
+        // Similar to string anagrams problem
+        // We only need to check with 32 numbers
+        long compare = counter(N);
         for(int i = 0; i < 32; i++) {
-            long curr = counter(1 << i);
-            if(curr == cmp)
-                return 1;
+            if(counter(1 << i) == compare)
+                return true;
         }
-        return 0;
+        return false;
     }
 };
