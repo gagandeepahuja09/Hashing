@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int minKBitFlips(vector<int>& A, int K) {
+        int n  = A.size();
+        int flip = 0;
+        vector<int> pre(n, 0);
+        int count = 0;
+        for(int i = 0; i < A.size(); i++) {
+            flip = (flip + pre[i]) % 2;
+            if(A[i] == flip) {
+                count++;
+                flip = (flip + 1) % 2;
+                if(i + K > n)
+                    return -1;
+                if(i + K < n)
+                    pre[i + K] = (pre[i + K] + 1) % 2;
+            }
+        }
+        return count;
+    }
+};
